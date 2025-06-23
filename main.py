@@ -76,11 +76,12 @@ flight_time = 0
 wallpaper = pygame.image.load("wallpaper.png")
 rocket_img = pygame.image.load("rocket.png")
 
-# Optionally, scale the wallpaper to fit the screen size
+# Scale the wallpaper to fit the screen size
 wallpaper = pygame.transform.scale(wallpaper, (WIDTH, HEIGHT))  # Resize to fit the window
 rocket_img = pygame.transform.scale(rocket_img, (75, 125))
 
-rocket_rect = rocket_img.get_rect(center=(x0, y0))
+rotated_rocket = pygame.transform.rotate(rocket_img, -45)  # Negative for correct direction
+rocket_rect = rotated_rocket.get_rect(center=(x0, y0))
 
 # ------------------- Main Loop -------------------
 running = True
@@ -123,21 +124,25 @@ while running:
         if y_px >= HEIGHT:
             flight_active = False
             y_px = HEIGHT - 50  # Place rocket at ground visually
+            screen.blit(rocket_img, rocket_rect)
+
 
     else:
         # Freeze rocket position at landing spot
         x_px = x0 + max_range * scale
         y_px = HEIGHT
         t = flight_time
+        screen.blit(rocket_img, rocket_rect)
 
     if y_px >= HEIGHT and flight_active:
         flight_active = False
         y_px = HEIGHT # visually land on ground
         flight_time = t  # store final time
+        screen.blit(rocket_img, rocket_rect)
 
     # Draw rocket
     rocket_rect.center = (x_px, y_px-50)
-    screen.blit(rocket_img, rocket_rect)
+    screen.blit(rotated_rocket, rocket_rect)
 
     # UI Text
     font = pygame.font.SysFont('Arial', 18)
